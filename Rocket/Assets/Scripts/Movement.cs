@@ -5,10 +5,20 @@ using UnityEngine.UIElements;
 
 public class Movement : MonoBehaviour
 {
+    // PARAMATERS - for tunning
+    
+    // CACHE - e.g. references for readability or speed
+
+    // STATE - private instance (member) variables
     [SerializeField] float mainThrust=100;
     [SerializeField] float rotateSpeed=10;
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] ParticleSystem leftThrustPart;
+    [SerializeField] ParticleSystem rightThrustPart;
+    [SerializeField] ParticleSystem boosterPart;
     Rigidbody rb;
     AudioSource au;
+    bool isAlive;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +32,11 @@ public class Movement : MonoBehaviour
         ProcessThrust();
         ProcessRotation();
     }
+
+    void CrushSequence()
+    {
+
+    }
     void ProcessThrust()
     {
         if(Input.GetKey(KeyCode.Space))
@@ -29,12 +44,17 @@ public class Movement : MonoBehaviour
             rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);   
             if(!au.isPlaying)
             {
-                au.Play();
+                au.PlayOneShot(mainEngine);
             }   
+            if (!boosterPart.isPlaying)
+            {
+                boosterPart.Play();
+            }
         }
         else
         {
             au.Stop();
+            boosterPart.Stop();
         }
     }
     void ProcessRotation()
@@ -43,11 +63,27 @@ public class Movement : MonoBehaviour
         {
             Debug.Log("Rotating left");
             ApplyRotation(rotateSpeed);
+            if (!leftThrustPart.isPlaying)
+            {
+                leftThrustPart.Play();
+            }
+        }
+        else
+        {
+            leftThrustPart.Stop();
         }
         if (Input.GetKey(KeyCode.D))
         {
             Debug.Log("Rotating right");
             ApplyRotation(-rotateSpeed);
+            if (!rightThrustPart.isPlaying)
+            {
+                rightThrustPart.Play();
+            }
+        }
+        else
+        {
+            rightThrustPart.Stop();
         }
     }
 
