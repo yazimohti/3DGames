@@ -32,62 +32,84 @@ public class Movement : MonoBehaviour
         ProcessThrust();
         ProcessRotation();
     }
-
-    void CrushSequence()
-    {
-
-    }
+    
+    
     void ProcessThrust()
     {
         if(Input.GetKey(KeyCode.Space))
         {
-            rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);   
-            if(!au.isPlaying)
-            {
-                au.PlayOneShot(mainEngine);
-            }   
-            if (!boosterPart.isPlaying)
-            {
-                boosterPart.Play();
-            }
+            StartThrusting();
         }
         else
         {
-            au.Stop();
-            boosterPart.Stop();
+            StopThrusting();
         }
     }
     void ProcessRotation()
     {
         if (Input.GetKey(KeyCode.A))
         {
-            Debug.Log("Rotating left");
-            ApplyRotation(rotateSpeed);
-            if (!leftThrustPart.isPlaying)
-            {
-                leftThrustPart.Play();
-            }
+            RotateLeft();
         }
         else
         {
-            leftThrustPart.Stop();
+            StopRotateLeft();
         }
         if (Input.GetKey(KeyCode.D))
         {
-            Debug.Log("Rotating right");
-            ApplyRotation(-rotateSpeed);
-            if (!rightThrustPart.isPlaying)
-            {
-                rightThrustPart.Play();
-            }
+            RotateRight();
         }
         else
         {
-            rightThrustPart.Stop();
+            StopRotateRight();
+        }
+    }
+    void StartThrusting()
+    {
+        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+        if (!au.isPlaying)
+        {
+            au.PlayOneShot(mainEngine);
+        }
+        if (!boosterPart.isPlaying)
+        {
+            boosterPart.Play();
+        }
+    }
+    void StopThrusting()
+    {
+        au.Stop();
+        boosterPart.Stop();
+    }
+
+    void RotateLeft()
+    {
+        Debug.Log("Rotating left");
+        ApplyRotation(rotateSpeed);
+        if (!leftThrustPart.isPlaying)
+        {
+            leftThrustPart.Play();
         }
     }
 
-    private void ApplyRotation(float rotateSpeed)
+    void RotateRight()
+    {
+        Debug.Log("Rotating right");
+        ApplyRotation(-rotateSpeed);
+        if (!rightThrustPart.isPlaying)
+        {
+            rightThrustPart.Play();
+        }
+    }
+    void StopRotateLeft()
+    {
+        leftThrustPart.Stop();
+    }
+    void StopRotateRight()
+    {
+        rightThrustPart.Stop();
+    }
+    void ApplyRotation(float rotateSpeed)
     {
         rb.freezeRotation=true; // freezing rotation so we can manually rotate
         transform.Rotate(Vector3.forward * rotateSpeed * Time.deltaTime );
